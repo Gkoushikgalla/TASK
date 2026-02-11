@@ -5,18 +5,19 @@ import {
   useGetProductByIdQuery,
   useDeleteProductMutation,
   usePatchProductMutation,
-  useUpdateProductMutation,
 } from "../api/fakestoreApi";
+
 import {
   Box,
-  Typography,
-  Paper,
   TextField,
   MenuItem,
+  Typography,
+  Paper,
   Button,
 } from "@mui/material";
-import ProductForm from "../components/ProductForm";
+
 import ProductCard from "../components/ProductCard";
+import ProductForm from "../components/ProductForm";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { logout } from "../redux/authSlice";
@@ -26,36 +27,27 @@ export default function Dashboard() {
   const [category, setCategory] = useState("");
   const [productId, setProductId] = useState("");
 
-  const { data: products = [], isLoading } = useGetProductsQuery();
+  const { data: allProducts = [], isLoading } = useGetProductsQuery();
   const { data: categoryProducts = [] } =
-    useGetProductsByCategoryQuery(category, { skip: !category });
-  const { data: singleProduct } =
-    useGetProductByIdQuery(productId, { skip: !productId });
+    useGetProductsByCategoryQuery(category, {
+      skip: !category,
+    });
 
-  const finalProducts = category ? categoryProducts : products;
+  const { data: singleProduct } = useGetProductByIdQuery(productId, {
+    skip: !productId,
+  });
+
+  const products = category ? categoryProducts : allProducts;
 
   const [deleteProduct] = useDeleteProductMutation();
   const [patchProduct] = usePatchProductMutation();
-  const [updateProduct] = useUpdateProductMutation();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handlePut = async (id) => {
-    await updateProduct({
-      id,
-      title: "Updated Product",
-      price: 500,
-      description: "Updated using PUT",
-      image: "https://i.pravatar.cc",
-      category: "electronics",
-    }).unwrap();
-    toast.success("Product updated (PUT)");
-  };
-
   const handlePatch = async (id) => {
     await patchProduct({ id, price: 999 }).unwrap();
-    toast.info("Product patched");
+    toast.info("Price patched");
   };
 
   const handleLogout = () => {
@@ -67,62 +59,70 @@ export default function Dashboard() {
 
   return (
     <Box p={3}>
-      <Box display="flex" justifyContent="space-between" mb={3}>
-        <Typography variant="h4">Dashboard</Typography>
-        <Button color="error" onClick={handleLogout}>
+      {/* Header */}
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={3}
+      >
+        <Typography variant="h4">Product Dashboard</Typography>
+        <Button color="error" variant="outlined" onClick={handleLogout}>
           Logout
         </Button>
       </Box>
 
+      {/* Create Product */}
       <Paper sx={{ p: 2, mb: 3 }}>
         <ProductForm />
       </Paper>
 
+      {/* Filters */}
       <Paper sx={{ p: 2, mb: 3 }}>
-        <Box display="flex" gap={2}>
-        <TextField
-        select
-        label="Category"
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
-        sx={{ minWidth: 220 }}
-        >
-  <MenuItem value="">All</MenuItem>
-  <MenuItem value="electronics">Electronics</MenuItem>
-  <MenuItem value="jewelery">Jewelery</MenuItem>
-  <MenuItem value="men's clothing">Men</MenuItem>
-  <MenuItem value="women's clothing">Women</MenuItem>
-</TextField>
-
+        <Box display="flex" gap={2} flexWrap="wrap">
+          <TextField
+            select
+            label="Category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            sx={{ minWidth: 200 }}
+          >
+            <MenuItem value="">All</MenuItem>
+            <MenuItem value="electronics">Electronics</MenuItem>
+            <MenuItem value="jewelery">Jewelery</MenuItem>
+            <MenuItem value="men's clothing">Men</MenuItem>
+            <MenuItem value="women's clothing">Women</MenuItem>
+          </TextField>
 
           <TextField
-            label="Fetch product by ID"
+            label="Fetch Product by ID"
             value={productId}
             onChange={(e) => setProductId(e.target.value)}
           />
         </Box>
       </Paper>
 
+      {/* Single Product */}
       {singleProduct && (
         <Paper sx={{ p: 2, mb: 3 }}>
           <Typography>
-            Fetched: <strong>{singleProduct.title}</strong>
+            <strong>Fetched:</strong> {singleProduct.title}
           </Typography>
         </Paper>
       )}
 
+      {/* Products Grid (NO MUI Grid warnings) */}
       <Box
         display="grid"
-        gridTemplateColumns="repeat(auto-fill, minmax(280px,1fr))"
+        gridTemplateColumns="repeat(auto-fill, minmax(280px, 1fr))"
         gap={3}
       >
-        {finalProducts.map((p) => (
+        {products.map((p) => (
           <ProductCard
             key={p.id}
             product={p}
-            onPut={() => handlePut(p.id)}
-            onPatch={() => handlePatch(p.id)}
             onDelete={() => deleteProduct(p.id)}
+            onPatch={() => handlePatch(p.id)}
           />
         ))}
       </Box>

@@ -1,11 +1,4 @@
-import {
-  Box,
-  Paper,
-  TextField,
-  Button,
-  Typography,
-  Container,
-} from "@mui/material";
+import { Button, TextField, Container, Paper, Typography, Box } from "@mui/material";
 import { useLoginMutation } from "../api/fakestoreApi";
 import { useDispatch } from "react-redux";
 import { setToken } from "../redux/authSlice";
@@ -35,14 +28,16 @@ export default function Login() {
 
   return (
     <Box
-      minHeight="100vh"
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      bgcolor="#121212"
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#121212",
+      }}
     >
       <Container maxWidth="xs">
-        <Paper sx={{ p: 4 }}>
+        <Paper elevation={6} sx={{ p: 4, borderRadius: 2 }}>
           <Typography variant="h5" textAlign="center" mb={3}>
             FakeStore Login
           </Typography>
@@ -55,6 +50,7 @@ export default function Login() {
               margin="normal"
               required
             />
+
             <TextField
               name="password"
               label="Password"
@@ -63,10 +59,12 @@ export default function Login() {
               margin="normal"
               required
             />
+
             <Button
               type="submit"
               variant="contained"
               fullWidth
+              size="large"
               sx={{ mt: 2 }}
               disabled={isLoading}
             >

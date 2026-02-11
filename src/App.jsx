@@ -3,9 +3,9 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 
-export default function App() {
+function App() {
   return (
     <BrowserRouter>
       <ToastContainer />
@@ -23,3 +23,5 @@ export default function App() {
     </BrowserRouter>
   );
 }
+
+export default App;

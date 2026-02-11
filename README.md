@@ -1,15 +1,3 @@
-## Run Locally
-
-1. Clone the repository
-2. Install dependencies
-
-npm install
-
-3. Start development server
-
-npm run dev
-
-
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
