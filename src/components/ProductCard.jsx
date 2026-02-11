@@ -4,32 +4,34 @@ import {
   Typography,
   Button,
   Stack,
-  CardActions,
 } from "@mui/material";
 
-export default function ProductCard({ product, onDelete, onPatch }) {
+export default function ProductCard({
+  product,
+  onDelete,
+  onPatch,
+  onPut,
+}) {
   return (
-    <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+    <Card>
       <CardContent>
-        <Typography variant="subtitle1" fontWeight={600}>
+        <Typography fontWeight={600}>
           {product.title}
         </Typography>
+        <Typography>${product.price}</Typography>
 
-        <Typography color="text.secondary" mt={1}>
-          ${product.price}
-        </Typography>
-      </CardContent>
-
-      <CardActions sx={{ mt: "auto" }}>
-        <Stack direction="row" spacing={1}>
+        <Stack direction="row" spacing={1} mt={2}>
+          <Button size="small" onClick={onPut}>
+            Update (PUT)
+          </Button>
+          <Button size="small" onClick={onPatch}>
+            Patch
+          </Button>
           <Button size="small" color="error" onClick={onDelete}>
             Delete
           </Button>
-          <Button size="small" variant="outlined" onClick={onPatch}>
-            Patch
-          </Button>
         </Stack>
-      </CardActions>
+      </CardContent>
     </Card>
   );
 }

@@ -4,16 +4,16 @@ import { useAddProductMutation } from "../api/fakestoreApi";
 import { toast } from "react-toastify";
 
 export default function ProductForm() {
-  const [addProduct] = useAddProductMutation();
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
+  const [addProduct] = useAddProductMutation();
 
-  const handleAdd = async () => {
+  const handleSubmit = async () => {
     try {
       await addProduct({
         title,
         price,
-        description: "Sample product",
+        description: "New product",
         image: "https://i.pravatar.cc",
         category: "electronics",
       }).unwrap();
@@ -22,12 +22,12 @@ export default function ProductForm() {
       setTitle("");
       setPrice("");
     } catch {
-      toast.error("Create failed");
+      toast.error("Failed to create product");
     }
   };
 
   return (
-    <Box display="flex" gap={2} mb={3}>
+    <Box display="flex" gap={2}>
       <TextField
         label="Title"
         value={title}
@@ -38,8 +38,8 @@ export default function ProductForm() {
         value={price}
         onChange={(e) => setPrice(e.target.value)}
       />
-      <Button variant="contained" onClick={handleAdd}>
-        ADD
+      <Button variant="contained" onClick={handleSubmit}>
+        Add
       </Button>
     </Box>
   );

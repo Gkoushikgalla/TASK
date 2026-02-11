@@ -7,7 +7,6 @@ export const fakestoreApi = createApi({
   }),
   tagTypes: ["Products"],
   endpoints: (builder) => ({
-    // AUTH
     login: builder.mutation({
       query: (credentials) => ({
         url: "auth/login",
@@ -16,7 +15,6 @@ export const fakestoreApi = createApi({
       }),
     }),
 
-    // PRODUCTS
     getProducts: builder.query({
       query: () => "products",
       providesTags: ["Products"],
