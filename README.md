@@ -12,7 +12,8 @@ The application includes:
 - Clean Material UI interface
 - Deployment on Netlify
 
----
+--- 
+
 
 ## 🚀 Live Demo
 
@@ -41,6 +42,11 @@ Password: 83r5^_
 - Netlify (Deployment)
 
 ---
+## 🧩 Requirements
+
+- Node.js v18+
+- npm v9+
+
 
 ## 📡 API Endpoints Implemented
 
@@ -73,6 +79,10 @@ All API calls are handled using **RTK Query**.
 ✔ Delete product  
 ✔ Toast notifications for success & error  
 ✔ Responsive Material UI layout  
+✔ Form validation for product creation
+✔ Numeric validation for product ID search
+✔ Proper loading and error state handling
+
 
 ---
 
@@ -97,24 +107,30 @@ src/
 
 
 ---
-
 ## 🛠 Run Locally
 
-1. Clone the repository(npm install)
-2. Install dependencies(npm run dev )
-3. Start development server(npm run dev)
-4. Build for production(npm run build)
+1. Clone the repository  
+   git clone <your-repo-link>
+
+2. Navigate to project folder  
+   cd project-name
+
+3. Install dependencies  
+   npm install
+
+4. Start development server  
+   npm run dev
+
+5. Build for production  
+   npm run build
 
 
----
+## ⚠ Known Limitation
 
-## 📌 Notes
+FakeStore API does not persist data permanently.
+All POST, PUT, PATCH, and DELETE operations simulate success
+but are not stored on the server.
 
-- FakeStore API does not persist data permanently.
-- PUT and PATCH requests are verified via browser Network tab.
-- RTK Query automatically handles loading and caching.
-
----
 
 ## 👨‍💻 Author
 
