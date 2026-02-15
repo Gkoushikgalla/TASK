@@ -17,7 +17,7 @@ The application includes:
 
 ## 🚀 Live Demo
 
-🔗 Live URL: https://your-netlify-link.netlify.app  
+🔗 Live URL: https://cozy-croquembouche-06964b.netlify.app/ 
 
 ---
 
