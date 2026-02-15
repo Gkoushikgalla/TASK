@@ -4,30 +4,41 @@ import { useAddProductMutation } from "../api/fakestoreApi";
 import { toast } from "react-toastify";
 
 export default function ProductForm() {
-  const [addProduct] = useAddProductMutation();
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
+  const [addProduct] = useAddProductMutation();
 
-  const handleAdd = async () => {
+  const handleSubmit = async () => {
+    if (!title.trim()) {
+      toast.error("Title is required");
+      return;
+    }
+  
+    if (!price || isNaN(price) || Number(price) <= 0) {
+      toast.error("Valid price required");
+      return;
+    }
+  
     try {
       await addProduct({
         title,
-        price,
-        description: "Sample product",
-        image: "https://i.pravatar.cc",
+        price: Number(price),
+        description: "Test description",
         category: "electronics",
+        image: "https://i.pravatar.cc",
       }).unwrap();
-
+  
       toast.success("Product created");
       setTitle("");
       setPrice("");
-    } catch {
-      toast.error("Create failed");
+    } catch (error) {
+      toast.error("Creation failed");
     }
   };
+  
 
   return (
-    <Box display="flex" gap={2} mb={3}>
+    <Box display="flex" gap={2} flexWrap="wrap">
       <TextField
         label="Title"
         value={title}
@@ -35,11 +46,12 @@ export default function ProductForm() {
       />
       <TextField
         label="Price"
+        type="number"
         value={price}
         onChange={(e) => setPrice(e.target.value)}
       />
-      <Button variant="contained" onClick={handleAdd}>
-        ADD
+      <Button variant="contained" onClick={handleSubmit}>
+        Add Product
       </Button>
     </Box>
   );

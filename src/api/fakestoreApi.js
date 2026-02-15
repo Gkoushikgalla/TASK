@@ -5,9 +5,8 @@ export const fakestoreApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "https://fakestoreapi.com/",
   }),
-  tagTypes: ["Products"],
   endpoints: (builder) => ({
-    // AUTH
+    // LOGIN
     login: builder.mutation({
       query: (credentials) => ({
         url: "auth/login",
@@ -16,53 +15,125 @@ export const fakestoreApi = createApi({
       }),
     }),
 
-    // PRODUCTS
+    // GET ALL PRODUCTS
     getProducts: builder.query({
       query: () => "products",
-      providesTags: ["Products"],
     }),
 
+    // GET SINGLE
     getProductById: builder.query({
       query: (id) => `products/${id}`,
     }),
 
+    // GET CATEGORY
     getProductsByCategory: builder.query({
       query: (category) => `products/category/${category}`,
     }),
 
+    // CREATE
     addProduct: builder.mutation({
       query: (product) => ({
         url: "products",
         method: "POST",
         body: product,
       }),
-      invalidatesTags: ["Products"],
+      async onQueryStarted(product, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+
+          dispatch(
+            fakestoreApi.util.updateQueryData(
+              "getProducts",
+              undefined,
+              (draft) => {
+                draft.unshift({
+                  ...product,
+                  id: data?.id || Date.now(),
+                });
+              }
+            )
+          );
+        } catch {}
+      },
     }),
 
+    // PUT (FULL UPDATE)
     updateProduct: builder.mutation({
       query: ({ id, ...data }) => ({
         url: `products/${id}`,
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: ["Products"],
+      async onQueryStarted({ id, ...data }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          fakestoreApi.util.updateQueryData(
+            "getProducts",
+            undefined,
+            (draft) => {
+              const index = draft.findIndex((p) => p.id === id);
+              if (index !== -1) {
+                draft[index] = { ...draft[index], ...data };
+              }
+            }
+          )
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
     }),
 
+    // PATCH (PARTIAL)
     patchProduct: builder.mutation({
       query: ({ id, ...data }) => ({
         url: `products/${id}`,
         method: "PATCH",
         body: data,
       }),
-      invalidatesTags: ["Products"],
+      async onQueryStarted({ id, ...data }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          fakestoreApi.util.updateQueryData(
+            "getProducts",
+            undefined,
+            (draft) => {
+              const product = draft.find((p) => p.id === id);
+              if (product) Object.assign(product, data);
+            }
+          )
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
     }),
 
+    // DELETE
     deleteProduct: builder.mutation({
       query: (id) => ({
         url: `products/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Products"],
+      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          fakestoreApi.util.updateQueryData(
+            "getProducts",
+            undefined,
+            (draft) => draft.filter((p) => p.id !== id)
+          )
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
     }),
   }),
 });
